@@ -1,0 +1,24 @@
+{
+  "name": "Smart Study Generator Agent",
+  "short_name": "Smart Study",
+  "description": "An AI-powered Smart Study Generator that creates personalized study plans, summaries, flashcards, quizzes, and tracks learning progress using IBM watsonx Orchestrate and Granite Models.",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "license": "MIT",
+  "homepage": "https://yourusername.github.io/Smart-Study-Generator-Agent/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/Smart-Study-Generator-Agent"
+  },
+  "keywords": [
+    "AI",
+    "Education",
+    "Smart Study",
+    "IBM",
+    "watsonx",
+    "Orchestrate",
+    "Granite",
+    "Student",
+    "Learning"
+  ]
+}
