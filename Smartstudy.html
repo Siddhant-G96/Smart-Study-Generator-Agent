@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Study Generator Agent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Gradient background + floating blobs */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #4a00e0, #8e2de2);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ffdd57;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      animation: typing 4s steps(40) infinite alternate;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #fff;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: #ffdd57;
+      color: #333;
+      padding: 12px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: transform 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* AI Chat + Upload Section */
+    .chat-upload {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      padding: 60px 20px;
+    }
+
+    .chat-box, .upload-box {
+      flex: 1 1 300px;
+      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 20px;
+      min-height: 300px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .chat-box h3, .upload-box h3 {
+      margin-bottom: 15px;
+    }
+
+    .chat-messages {
+      height: 200px;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+    }
+
+    .chat-input button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      background: #ffdd57;
+      cursor: pointer;
+    }
+
+    .upload-area {
+      border: 2px dashed #fff;
+      border-radius: 15px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .upload-area:hover {
+      background: rgba(255,255,255,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  window.wxOConfiguration = {
+    orchestrationID: "36875478bbb748b1bfd3f33e29248619_c8358b5e-4436-425a-9b51-c1375926569e",
+    hostURL: "https://au-syd.watson-orchestrate.cloud.ibm.com",
+    rootElementID: "root",
+    deploymentPlatform: "ibmcloud",
+    crn: "crn:v1:bluemix:public:watsonx-orchestrate:au-syd:a/36875478bbb748b1bfd3f33e29248619:c8358b5e-4436-425a-9b51-c1375926569e::",
+    chatOptions: {
+        agentId: "cc1aadc3-d864-4ff0-bd10-7929eb6d294e", 
+    }
+  };
+  setTimeout(function () {
+    const script = document.createElement('script');
+    script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+    script.addEventListener('load', function () {
+        wxoLoader.init();
+    });
+    document.head.appendChild(script);
+  }, 0);                     
+</script>
+
+  <nav>
+    <h1>Smart Study Agent</h1>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#flashcards">Flashcards</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h2>Adaptive AI Study Companion</h2>
+    <p>Fuse resources, generate flashcards, visualize progress, and stay exam-ready with personal intelligence.</p>
+    <a href="#chat" class="btn">Get Started</a>
+  </section>
+
+  <section class="chat-upload" id="chat">
+    <div class="chat-box">
+      <h3>🤖 AI Chat</h3>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Ask me anything...">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+    <div class="upload-box">
+      <h3>📄 Upload Notes</h3>
+      <div class="upload-area" id="uploadArea">Drag & Drop your notes here</div>
+    </div>
+  </section>
+
+  <script>
+    // Simple chat simulation
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const messages = document.getElementById('chatMessages');
+      if(input.value.trim() !== "") {
+        const userMsg = document.createElement('div');
+        userMsg.textContent = "You: " + input.value;
+        messages.appendChild(userMsg);
+
+        const aiMsg = document.createElement('div');
+        aiMsg.textContent = "AI: Generating smart study response...";
+        messages.appendChild(aiMsg);
+
+        input.value = "";
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+
+    // Drag & Drop upload simulation
+    const uploadArea = document.getElementById('uploadArea');
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.style.background = "rgba(255,255,255,0.2)";
+    });
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.style.background = "transparent";
+    });
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.textContent = "Notes Uploaded Successfully!";
+      uploadArea.style.background = "rgba(0,255,0,0.2)";
+    });
+  </script>
+</body>
+</html>
